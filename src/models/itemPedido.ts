@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../database/index.js";
-import { Pedido } from "./pedido.js";
+import { sequelize } from "../database/index";
+import { Pedido } from "./pedido";
 
 export class ItemPedido extends Model { }
 
