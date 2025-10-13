@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manas Restaurante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        input,
+        select,
+        button {
+            padding: 5px;
+            margin: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        #pedidoItensList {
+            margin: 10px 0;
+            padding: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Manas Restaurante</h1>
+
+    <h2>Abrir / Fechar Caixa</h2>
+    <button id="abrirCaixaBtn">Abrir Caixa</button>
+    <button id="fecharCaixaBtn">Fechar Caixa</button>
+
+    <h2>Novo Pedido</h2>
+    <form id="pedidoForm">
+        <input type="text" id="clienteNome" placeholder="Nome do cliente" required>
+
+        <select id="produtoSelect"></select>
+        <input type="number" id="quantidade" min="1" value="1">
+        <button type="button" id="adicionarProdutoBtn">Adicionar Produto</button>
+
+        <div id="pedidoItensList"></div>
+
+        <button type="submit">Enviar Pedido</button>
+    </form>
+
+    <h2>Pedidos</h2>
+    <table id="pedidosTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Itens</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Data/Hora</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+
+    <script src="app.js" defer></script>
+</body>
+
+</html>

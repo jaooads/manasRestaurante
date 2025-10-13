@@ -1,8 +1,14 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
 import { sequelize } from "../database/index";
 import { Pedido } from "./pedido";
 
-export class ItemPedido extends Model { }
+export class ItemPedido extends Model<InferAttributes<ItemPedido>, InferCreationAttributes<ItemPedido>> {
+    declare id: number;
+    declare pedidoId: number;
+    declare descricao: string;
+    declare quantidade: number;
+    declare precoUnitario: number;
+}
 
 ItemPedido.init(
     {
@@ -34,5 +40,3 @@ ItemPedido.init(
     }
 );
 
-ItemPedido.belongsTo(Pedido, { foreignKey: "pedidoId" });
-Pedido.hasMany(ItemPedido, { foreignKey: "pedidoId" });
