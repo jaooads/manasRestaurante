@@ -8,6 +8,8 @@ const router = Router();
 // --------- PEDIDOS ---------
 router.post("/pedido", PedidoController.criarPedido);
 router.get("/pedidos", PedidoController.listarPedidos);
+router.patch("/pedido/:pedidoId/status", PedidoController.atualizarStatusPedido);
+
 
 // --------- CAIXA ---------
 router.post("/caixa/abrir", CaixaController.abrirCaixa);
