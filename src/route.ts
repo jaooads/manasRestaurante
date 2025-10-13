@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as PedidoController from "./controllers/pedidoController";
-import * as CaixaController from "./controllers/caixaController.js";
+import * as CaixaController from "./controllers/caixaController";
 
 const router = Router();
 

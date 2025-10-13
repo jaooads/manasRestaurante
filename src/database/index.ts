@@ -17,8 +17,12 @@ export const sequelize = new Sequelize(
 export const connectDB = async () => {
     try {
         await sequelize.authenticate();
-        console.log("Conexão com o banco de dados estabelecida com sucesso!");
+        console.log("Conectado ao banco com sucesso!");
+
+        // cria todas as tabelas definidas nos models
+        await sequelize.sync({ alter: true }); 
+        console.log("Tabelas sincronizadas!");
     } catch (error) {
-        console.error("Erro ao conectar ao banco:", error);
+        console.error("Erro ao conectar no banco:", error);
     }
 };

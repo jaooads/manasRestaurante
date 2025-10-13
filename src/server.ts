@@ -1,11 +1,11 @@
 import express from "express";
 import { connectDB } from "./database/index";
-import router from "./route.js";
+import routes from './route';
 
 
 const app = express();
 app.use(express.json());
-app.use("/api", router);
+app.use("/api", routes);
 
 
 app.get("/", (req, res) => res.send("API ManasRestaurante rodando!"));

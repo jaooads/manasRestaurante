@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { Pedido } from "../models/pedido.js";
-import { ItemPedido } from "../models/itemPedido.js";
-import { Cliente } from "../models/cliente.js";
+import { Pedido } from "../models/pedido";
+import { ItemPedido } from "../models/itemPedido";
+import { Cliente } from "../models/cliente";
 
 export const criarPedido = async (req: Request, res: Response) => {
     try {
@@ -33,8 +33,9 @@ export const criarPedido = async (req: Request, res: Response) => {
 
         return res.status(201).json({ msg: "Pedido criado com sucesso", pedidoId: pedido.id });
     } catch (error) {
+        
         console.error(error);
-        return res.status(500).json({ msg: "Erro ao criar pedido" });
+        return res.status(500).json({ msg: "Erro ao criar pedido" , error});
     }
 };
 
