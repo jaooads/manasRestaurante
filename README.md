@@ -60,13 +60,11 @@ src/
 git clone https://github.com/seu-usuario/manasRestaurante.git
 2. Instalar as dependências
 bash
-Copiar código
 npm install
 3. Configurar o banco de dados
 Crie um arquivo .env na raiz do projeto com as seguintes variáveis:
 
 env
-Copiar código
 DB_NAME=manas_restaurante
 DB_USER=root
 DB_PASS=sua_senha
@@ -74,14 +72,12 @@ DB_HOST=localhost
 DB_DIALECT=mysql
 PORT=3000
 4. Rodar as migrações/sincronização
+
 bash
-Copiar código
 npm run dev
 5. Testar a API
 Acesse em:
 
-arduino
-Copiar código
 http://localhost:3000
 📅 Próximas Etapas
  Implementar dashboard com estatísticas de vendas
