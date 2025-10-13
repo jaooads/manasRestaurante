@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mysql2": "^3.15.2",
+    "sequelize": "^6.37.7"
+  },
+  "name": "manasrestaurante",
+  "version": "1.0.0",
+  "description": "Sistema completo para gerenciamento de restaurante, desenvolvido em **Node.js + TypeScript + Sequelize (MySQL)**.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaooads/manasRestaurante.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaooads/manasRestaurante/issues"
+  },
+  "homepage": "https://github.com/jaooads/manasRestaurante#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
