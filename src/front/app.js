@@ -69,19 +69,21 @@ async function carregarPedidos() {
 
         pedidosTableBody.innerHTML = pedidos.map(p => {
             const itens = p.itens || [];
-            const total = itens.reduce((acc, i) => acc + i.quantidade * i.precoUnitario, 0);
-
             return `
                 <tr>
                     <td>${p.id}</td>
-                    <td>${p.Cliente?.nome || "Desconhecido"}</td>
-                    <td>${itens.map(i => `${i.descricao} x${i.quantidade}`).join(", ")}</td>
-                    <td>R$ ${total.toFixed(2)}</td>
-                    <td>${p.status || "Aberto"}</td>
+                    <td>${p.Cliente.nome}</td>
+                    <td>${itens.map(i => i.descricao + " x" + i.quantidade).join(", ")}</td>
+                    <td>R$ ${p.total.toFixed(2)}</td>
+                    <td>${p.status}</td>
                     <td>${new Date(p.data).toLocaleString()}</td>
+                    <td>
+                        <button onclick="mudarStatus(${p.id}, '${p.status}')">Alterar Status</button>
+                    </td>
                 </tr>
             `;
         }).join("");
+
     } catch (err) {
         console.error("Erro ao carregar pedidos:", err);
     }
@@ -102,3 +104,18 @@ window.addEventListener("DOMContentLoaded", () => {
     carregarProdutos();
     carregarPedidos();
 });
+
+async function mudarStatus(pedidoId, statusAtual) {
+    const novoStatus = statusAtual === "em_preparo" ? "concluido" : statusAtual === "concluido" ? "pago" : "em_preparo";
+
+    try {
+        await fetch(`http://localhost:3000/api/pedido/${pedidoId}/status`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: novoStatus })
+        });
+        carregarPedidos();
+    } catch (err) {
+        console.error("Erro ao atualizar status:", err);
+    }
+}

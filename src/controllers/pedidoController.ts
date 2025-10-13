@@ -52,7 +52,7 @@ export const listarPedidos = async (_req: Request, res: Response) => {
         const pedidos = await Pedido.findAll({
             include: [
                 { model: Cliente, attributes: ["nome"] },
-                { model: ItemPedido, as: "itens" }, 
+                { model: ItemPedido, as: "itens" },
             ],
             order: [["data", "DESC"]],
         });
@@ -60,5 +60,27 @@ export const listarPedidos = async (_req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Erro ao listar pedidos", error });
+    }
+};
+
+export const atualizarStatusPedido = async (req: Request, res: Response) => {
+    try {
+        const { pedidoId } = req.params;
+        const { status } = req.body;
+
+        if (!["em_preparo", "concluido", "pago"].includes(status)) {
+            return res.status(400).json({ msg: "Status inválido" });
+        }
+
+        const pedido = await Pedido.findByPk(pedidoId);
+        if (!pedido) return res.status(404).json({ msg: "Pedido não encontrado" });
+
+        pedido.status = status as "em_preparo" | "concluido" | "pago";
+        await pedido.save();
+
+        return res.json({ msg: "Status atualizado com sucesso", pedido });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Erro ao atualizar status", error });
     }
 };
