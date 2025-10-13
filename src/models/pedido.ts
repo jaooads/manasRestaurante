@@ -1,6 +1,8 @@
 import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
 import { sequelize } from "../database/index";
+import { ItemPedido } from "./itemPedido";
 import { Cliente } from "./cliente";
+
 
 export class Pedido extends Model<InferAttributes<Pedido>, InferCreationAttributes<Pedido>> {
     declare id: number;
@@ -9,6 +11,7 @@ export class Pedido extends Model<InferAttributes<Pedido>, InferCreationAttribut
     declare status: CreationOptional<"em_preparo" | "concluido" | "pago">;
     declare total: number;
     declare caixaId: CreationOptional<number>;
+
 }
 
 Pedido.init(
@@ -39,7 +42,8 @@ Pedido.init(
         },
     },
     {
-        sequelize, modelName: "Pedido",
+        sequelize,
+        modelName: "Pedido",
         tableName: "pedidos",
         timestamps: false
     }
@@ -47,3 +51,6 @@ Pedido.init(
 
 Pedido.belongsTo(Cliente, { foreignKey: "clienteId" });
 Cliente.hasMany(Pedido, { foreignKey: "clienteId" });
+
+Pedido.hasMany(ItemPedido, { foreignKey: "pedidoId", as: "itens" });
+ItemPedido.belongsTo(Pedido, { foreignKey: "pedidoId", as: "itens" });
