@@ -41,9 +41,6 @@ src/
 │ ├─ caixaRoutes.ts
 ├─ server.ts
 
-yaml
-Copiar código
-
 ---
 
 ## ⚙️ Funcionalidades Principais
