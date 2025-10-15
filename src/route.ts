@@ -9,6 +9,8 @@ const router = Router();
 router.post("/pedido", PedidoController.criarPedido);
 router.get("/pedidos", PedidoController.listarPedidos);
 router.patch("/pedido/:pedidoId/status", PedidoController.atualizarStatusPedido);
+router.patch("/pedido/:id/pagamento", PedidoController.registrarPagamento);
+router.patch("/pedido/:id/pagamento", PedidoController.atualizarFormaPagamento);
 
 
 // --------- CAIXA ---------

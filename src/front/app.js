@@ -77,12 +77,38 @@ async function carregarPedidos() {
                     <td>R$ ${p.total.toFixed(2)}</td>
                     <td>${p.status}</td>
                     <td>${new Date(p.data).toLocaleString()}</td>
+                            <td>${p.formaPagamento ? p.formaPagamento.toUpperCase() : "-"}</td>
+
                     <td>
                         <button onclick="mudarStatus(${p.id}, '${p.status}')">Alterar Status</button>
                     </td>
                 </tr>
             `;
         }).join("");
+
+        function renderPedidos(pedidos) {
+            const tabela = document.querySelector("#tabela-pedidos tbody");
+            tabela.innerHTML = "";
+
+            pedidos.forEach(pedido => {
+                const linha = document.createElement("tr");
+
+                linha.innerHTML = `
+                <td>${pedido.id}</td>
+                <td>${pedido.Cliente?.nome || "-"}</td>
+                <td>${pedido.itens?.map(i => i.descricao).join(", ") || "-"}</td>
+                <td>R$ ${pedido.total.toFixed(2)}</td>
+                <td>${pedido.status}</td>
+                <td>${pedido.formaPagamento ? pedido.formaPagamento.toUpperCase() : "-"}</td>
+                <td>${new Date(pedido.data).toLocaleString()}</td>
+                <td>
+                  <button onclick="mudarStatus(${pedido.id}, '${pedido.status}')">Alterar Status</button>
+                </td>
+              `;
+
+                tabela.appendChild(linha);
+            });
+        }
 
     } catch (err) {
         console.error("Erro ao carregar pedidos:", err);
@@ -92,11 +118,35 @@ async function carregarPedidos() {
 
 // Abrir / Fechar Caixa
 document.getElementById("abrirCaixaBtn").addEventListener("click", async () => {
-    await fetch("http://localhost:3000/api/caixa/abrir", { method: "POST" });
+    try {
+        const res = await fetch("http://localhost:3000/api/caixa/abrir", { method: "POST" });
+        const data = await res.json();
+        if (res.ok) {
+            alert(data.msg);
+            document.getElementById("totalCaixa").textContent = "";
+        } else {
+            alert(data.msg);
+        }
+    } catch (err) {
+        console.error("Erro ao abrir caixa:", err);
+    }
 });
+
+
 document.getElementById("fecharCaixaBtn").addEventListener("click", async () => {
-    await fetch("http://localhost:3000/api/caixa/fechar", { method: "POST" });
-    carregarPedidos();
+    try {
+        const res = await fetch("http://localhost:3000/api/caixa/fechar", { method: "POST" });
+        const data = await res.json();
+        if (res.ok) {
+            alert(`${data.msg}. Total vendido: R$ ${data.totalVendido.toFixed(2)}`);
+            document.getElementById("totalCaixa").textContent = `Total do Caixa: R$ ${data.totalVendido.toFixed(2)}`;
+            carregarPedidos(); // Atualiza pedidos
+        } else {
+            alert(data.msg);
+        }
+    } catch (err) {
+        console.error("Erro ao fechar caixa:", err);
+    }
 });
 
 // Inicialização
@@ -106,7 +156,28 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 async function mudarStatus(pedidoId, statusAtual) {
-    const novoStatus = statusAtual === "em_preparo" ? "concluido" : statusAtual === "concluido" ? "pago" : "em_preparo";
+    let novoStatus;
+
+    if (statusAtual === "em_preparo") {
+        novoStatus = "concluido";
+    } else if (statusAtual === "concluido") {
+        const formaPagamento = await escolherFormaPagamento();
+        if (!formaPagamento) return;
+        novoStatus = "pago";
+
+        try {
+            await fetch(`http://localhost:3000/api/pedido/${pedidoId}/pagamento`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ formaPagamento })
+            });
+        } catch (err) {
+            console.error("Erro ao registrar pagamento:", err);
+            return;
+        }
+    } else {
+        novoStatus = "em_preparo";
+    }
 
     try {
         await fetch(`http://localhost:3000/api/pedido/${pedidoId}/status`, {
@@ -118,4 +189,28 @@ async function mudarStatus(pedidoId, statusAtual) {
     } catch (err) {
         console.error("Erro ao atualizar status:", err);
     }
+}
+
+function escolherFormaPagamento() {
+    return new Promise((resolve) => {
+        const modal = document.createElement("div");
+        modal.classList.add("modal-pagamento");
+        modal.innerHTML = `
+            <div class="modal-conteudo">
+                <h3>Selecione a forma de pagamento</h3>
+                <button class="btn-pagamento" data-tipo="dinheiro">💵 Dinheiro</button>
+                <button class="btn-pagamento" data-tipo="pix">⚡ Pix</button>
+                <button class="btn-pagamento" data-tipo="cartao">💳 Cartão</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.querySelectorAll(".btn-pagamento").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const tipo = btn.getAttribute("data-tipo");
+                modal.remove();
+                resolve(tipo);
+            });
+        });
+    });
 }
