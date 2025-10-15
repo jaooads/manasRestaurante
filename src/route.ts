@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as PedidoController from "./controllers/pedidoController";
 import * as CaixaController from "./controllers/caixaController";
 import * as ProdutoController from "./controllers/produtoController";
+import * as historicoCaixaController from "./controllers/historioCaixaController";
 
 const router = Router();
 
@@ -18,8 +19,13 @@ router.post("/caixa/abrir", CaixaController.abrirCaixa);
 router.post("/caixa/fechar", CaixaController.fecharCaixa);
 router.get("/caixas", CaixaController.listarCaixas);
 
+
 // --------- PRODUTO ---------
 router.post("/produto", ProdutoController.criarProduto);
 router.get("/produtos", ProdutoController.listarProdutos);
+
+// --------- HISTORICO CAIXA ---------
+router.get("/caixa/historico", historicoCaixaController.historicoCaixa);
+
 
 export default router;

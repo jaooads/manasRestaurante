@@ -12,7 +12,7 @@ export class Pedido extends Model<InferAttributes<Pedido>, InferCreationAttribut
     declare total: number;
     declare formaPagamento: "dinheiro" | "pix" | "cartao" | null;
     declare caixaId: CreationOptional<number>;
-
+    declare Cliente?: Cliente;
 
 }
 
