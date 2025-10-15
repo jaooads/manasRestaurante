@@ -84,3 +84,40 @@ export const atualizarStatusPedido = async (req: Request, res: Response) => {
         return res.status(500).json({ msg: "Erro ao atualizar status", error });
     }
 };
+
+export const registrarPagamento = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { formaPagamento } = req.body;
+
+        const pedido = await Pedido.findByPk(id);
+        if (!pedido) return res.status(404).json({ msg: "Pedido não encontrado" });
+
+        pedido.status = "pago";
+        pedido.formaPagamento = formaPagamento;
+        await pedido.save();
+
+        return res.json({ msg: "Pagamento registrado com sucesso" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Erro ao registrar pagamento" });
+    }
+};
+
+export const atualizarFormaPagamento = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { formaPagamento } = req.body;
+
+        const pedido = await Pedido.findByPk(id);
+        if (!pedido) return res.status(404).json({ msg: "Pedido não encontrado" });
+
+        pedido.formaPagamento = formaPagamento;
+        await pedido.save();
+
+        return res.json({ msg: "Forma de pagamento atualizada com sucesso" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Erro ao atualizar forma de pagamento" });
+    }
+};

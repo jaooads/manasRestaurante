@@ -10,7 +10,9 @@ export class Pedido extends Model<InferAttributes<Pedido>, InferCreationAttribut
     declare data: CreationOptional<Date>;
     declare status: CreationOptional<"em_preparo" | "concluido" | "pago">;
     declare total: number;
+    declare formaPagamento: "dinheiro" | "pix" | "cartao" | null;
     declare caixaId: CreationOptional<number>;
+
 
 }
 
@@ -40,6 +42,11 @@ Pedido.init(
             type: DataTypes.FLOAT,
             allowNull: false
         },
+        formaPagamento: {
+            type: DataTypes.ENUM("dinheiro", "pix", "cartao"),
+            allowNull: true
+        },
+
     },
     {
         sequelize,

@@ -20,8 +20,18 @@ export const fecharCaixa = async (_req: Request, res: Response) => {
         const caixa = await Caixa.findOne({ where: { status: "aberto" } });
         if (!caixa) return res.status(400).json({ msg: "Não há caixa aberto" });
 
-        const pedidos = await Pedido.findAll({ where: { caixaId: caixa.id, status: "pago" } });
+        // Buscar pedidos pagos que ainda não foram associados a nenhum caixa
+        const pedidos = await Pedido.findAll({ where: { status: "pago", caixaId: null } });
+
         const totalVendido = pedidos.reduce((acc, pedido) => acc + pedido.total, 0);
+
+        // Atualizar caixaId nos pedidos
+        await Promise.all(
+            pedidos.map(p => {
+                p.caixaId = caixa.id;
+                return p.save();
+            })
+        );
 
         caixa.totalVendido = totalVendido;
         caixa.status = "fechado";

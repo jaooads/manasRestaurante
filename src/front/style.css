@@ -111,3 +111,52 @@ tr:nth-child(even) {
 #fecharCaixaBtn:hover {
     opacity: 0.8;
 }
+
+.modal-pagamento {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-conteudo {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-conteudo h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.btn-pagamento {
+    margin: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #4CAF50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-pagamento:hover {
+    background: #43a047;
+}
+
+td:nth-child(6) {
+    font-weight: bold;
+    color: #1e88e5;
+}
+
+tr td:nth-child(5):contains('pago') {
+    color: #43a047;
+    font-weight: bold;
+}
