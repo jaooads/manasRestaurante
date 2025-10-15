@@ -214,3 +214,8 @@ function escolherFormaPagamento() {
         });
     });
 }
+
+
+
+
+

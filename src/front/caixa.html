@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área de Caixa - PDV</title>
+    <link rel="stylesheet" href="caixa.css">
+</head>
+
+<body>
+    <header>
+        <h1>PDV - Caixa</h1>
+        <button id="voltarPedidos">← Voltar para Pedidos</button>
+    </header>
+
+    <section id="resumoCaixa">
+        <div class="card">
+            <h2>Status do Caixa</h2>
+            <p id="statusCaixa">—</p>
+        </div>
+        <div class="card">
+            <h2>Total Vendido</h2>
+            <p id="totalVendido">R$ 0,00</p>
+        </div>
+        <div class="card">
+            <h2>Totais por Pagamento</h2>
+            <ul id="totaisPagamento">
+                <li>Dinheiro: R$ 0,00</li>
+                <li>PIX: R$ 0,00</li>
+                <li>Cartão: R$ 0,00</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Movimentações do Caixa</h2>
+        <table id="historicoCaixa">
+            <thead>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Cliente</th>
+                    <th>Itens</th>
+                    <th>Total</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Data/Hora</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section id="acoesCaixa">
+        <button id="abrirCaixaBtn">Abrir Caixa</button>
+        <button id="fecharCaixaBtn">Fechar Caixa</button>
+    </section>
+
+    <script src="caixa.js"></script>
+    <script>
+        document.getElementById("voltarPedidos").addEventListener("click", () => {
+            window.location.href = "index.html"; // volta para a tela de pedidos
+        });
+    </script>
+</body>
+
+</html>

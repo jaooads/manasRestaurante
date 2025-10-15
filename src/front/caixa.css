@@ -1,0 +1,103 @@
+body {
+    background-color: #1f1f2e;
+    color: #f0f0f5;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 28px;
+    color: #fff;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #ff4c4c;
+}
+
+#resumoCaixa {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: #2a2a3f;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    flex: 1;
+}
+
+.card h2 {
+    margin-bottom: 10px;
+    color: #f0f0f5;
+}
+
+.card p {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#totaisPagamento {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#totaisPagamento li {
+    margin-bottom: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2a2a3f;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #4b4b6b;
+    color: #fff;
+}
+
+thead th {
+    padding: 15px;
+    text-align: left;
+}
+
+tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #3a3a55;
+}
+
+tbody tr:hover {
+    background-color: #3a3a55;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #2f2f48;
+}
+
+@media (max-width: 768px) {
+    #resumoCaixa {
+        flex-direction: column;
+    }
+}
