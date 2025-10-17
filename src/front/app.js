@@ -115,40 +115,6 @@ async function carregarPedidos() {
     }
 }
 
-
-// Abrir / Fechar Caixa
-document.getElementById("abrirCaixaBtn").addEventListener("click", async () => {
-    try {
-        const res = await fetch("http://localhost:3000/api/caixa/abrir", { method: "POST" });
-        const data = await res.json();
-        if (res.ok) {
-            alert(data.msg);
-            document.getElementById("totalCaixa").textContent = "";
-        } else {
-            alert(data.msg);
-        }
-    } catch (err) {
-        console.error("Erro ao abrir caixa:", err);
-    }
-});
-
-
-document.getElementById("fecharCaixaBtn").addEventListener("click", async () => {
-    try {
-        const res = await fetch("http://localhost:3000/api/caixa/fechar", { method: "POST" });
-        const data = await res.json();
-        if (res.ok) {
-            alert(`${data.msg}. Total vendido: R$ ${data.totalVendido.toFixed(2)}`);
-            document.getElementById("totalCaixa").textContent = `Total do Caixa: R$ ${data.totalVendido.toFixed(2)}`;
-            carregarPedidos(); // Atualiza pedidos
-        } else {
-            alert(data.msg);
-        }
-    } catch (err) {
-        console.error("Erro ao fechar caixa:", err);
-    }
-});
-
 // Inicialização
 window.addEventListener("DOMContentLoaded", () => {
     carregarProdutos();

@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { Caixa } from "../models/caixa";
 import { Pedido } from "../models/pedido";
 import { Cliente } from "../models/cliente";
+import { ItemPedido } from "../models/itemPedido";
+
 
 export const historicoCaixa = async (_req: Request, res: Response) => {
     try {
@@ -11,7 +13,10 @@ export const historicoCaixa = async (_req: Request, res: Response) => {
             caixas.map(async (caixa) => {
                 const pedidos = await Pedido.findAll({
                     where: { caixaId: caixa.id, status: "pago" },
-                    include: [{ model: Cliente, attributes: ["nome"] }]
+                    include: [
+                        { model: Cliente, attributes: ["nome"] },
+                        { model: ItemPedido, as: "itens", attributes: ["descricao", "quantidade"] }
+                    ]
                 });
 
                 const totaisPorPagamento = {
@@ -38,13 +43,19 @@ export const historicoCaixa = async (_req: Request, res: Response) => {
                         cliente: p.Cliente?.nome,
                         total: p.total,
                         formaPagamento: p.formaPagamento,
-                        data: p.data
+                        data: p.data,
+                        itens: p.itens?.map(i => ({
+                            descricao: i.descricao,
+                            quantidade: i.quantidade
+                        })) || []
                     }))
                 };
             })
         );
 
         return res.json(resultado);
+
+        console.log(resultado)
     } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Erro ao buscar histórico do caixa", error });
