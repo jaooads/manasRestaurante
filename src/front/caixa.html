@@ -55,6 +55,51 @@
         <button id="fecharCaixaBtn">Fechar Caixa</button>
     </section>
 
+    <button id="historicoCaixasBtn">Histórico de Caixas</button>
+
+    <div id="modalHistoricoCaixas" class="modal" style="display:none;">
+        <div class="modal-conteudo">
+            <h3>Histórico de Caixas</h3>
+            <table id="tabelaHistoricoCaixas">
+                <thead>
+                    <tr>
+                        <th>ID Caixa</th>
+                        <th>Status</th>
+                        <th>Abertura</th>
+                        <th>Fechamento</th>
+                        <th>Total Vendido</th>
+                        <th>Dinheiro</th>
+                        <th>PIX</th>
+                        <th>Cartão</th>
+                        <th>Detalhes</th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button id="fecharModalHistorico">Fechar</button>
+        </div>
+        <div id="modalPedidosCaixa" class="modal-pagamento" style="display:none;">
+            <div class="modal-conteudo">
+                <h3>Pedidos do Caixa</h3>
+                <table id="pedidosDoCaixa">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Itens</th>
+                            <th>Total</th>
+                            <th>Forma de Pagamento</th>
+                            <th>Data/Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button id="fecharModalPedidos">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="caixa.js"></script>
     <script>
         document.getElementById("voltarPedidos").addEventListener("click", () => {

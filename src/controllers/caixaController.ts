@@ -23,7 +23,6 @@ export const fecharCaixa = async (_req: Request, res: Response) => {
         // Buscar pedidos pagos que ainda não foram associados a nenhum caixa
         const pedidos = await Pedido.findAll({ where: { status: "pago", caixaId: null } });
 
-        const totalVendido = pedidos.reduce((acc, pedido) => acc + pedido.total, 0);
 
         // Atualizar caixaId nos pedidos
         await Promise.all(
@@ -32,6 +31,9 @@ export const fecharCaixa = async (_req: Request, res: Response) => {
                 return p.save();
             })
         );
+
+        const todosPedidosDoCaixa = await Pedido.findAll({ where: { caixaId: caixa.id, status: "pago" } });
+        const totalVendido = todosPedidosDoCaixa.reduce((acc, pedido) => acc + pedido.total, 0);
 
         caixa.totalVendido = totalVendido;
         caixa.status = "fechado";
