@@ -20,7 +20,12 @@
             <input type="number" id="quantidade" placeholder="Quantidade" min="1">
             <button type="button" id="adicionarProdutoBtn">Adicionar Produto</button>
             <button type="submit">Criar Pedido</button>
+            <button type="button" id="abrirModalProdutoBtn">Incluir Produto</button>
+            <button type="button" id="irCaixaBtn">Ir para Área do Caixa</button>
+
         </form>
+
+
 
         <div id="pedidoItensList"></div>
 
@@ -40,10 +45,28 @@
             <tbody></tbody>
         </table>
 
+        <div id="modalProduto" class="modal-pagamento" style="display:none;">
+            <div class="modal-conteudo">
+                <h3>Novo Produto</h3>
+                <input type="text" id="nomeProduto" placeholder="Nome do Produto">
+                <input type="number" id="precoProduto" placeholder="Preço" min="0" step="0.01">
 
-        <button onclick="window.location.href='caixa.html'">Ir para Área do Caixa</button>
+                <div class="modal-botoes">
+                    <button type="button" id="salvarProdutoBtn">Salvar</button>
+                    <button type="button" id="fecharModalProdutoBtn">Fechar</button>
+                </div>
+            </div>
+        </div>
 
     </main>
+
+    <script>
+        document.getElementById('irCaixaBtn').addEventListener('click', () => {
+            window.location.href = 'caixa.html';
+        });
+    </script>
+
+
 
     <script src="app.js"></script>
 </body>

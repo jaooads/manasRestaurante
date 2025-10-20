@@ -46,6 +46,7 @@ form button:hover {
 }
 
 #pedidoItensList {
+    gap: 200px;
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -100,17 +101,7 @@ tr:nth-child(even) {
     opacity: 0.8;
 }
 
-#abrirCaixaBtn,
-#fecharCaixaBtn {
-    background: #ef4444;
-    color: #fff;
-    margin-right: 10px;
-}
 
-#abrirCaixaBtn:hover,
-#fecharCaixaBtn:hover {
-    opacity: 0.8;
-}
 
 .modal-pagamento {
     position: fixed;
@@ -161,3 +152,50 @@ tr td:nth-child(5):contains('pago') {
     font-weight: bold;
 }
 
+button {
+    display: flex;
+    gap: 100px;
+    padding: 10px;
+    font-size: 16px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #1e40af;
+}
+
+.modal-botoes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modal-botoes button {
+    padding: 10px 16px;
+    font-size: 16px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-botoes button:hover {
+    background: #1e40af;
+}
+
+.modal-conteudo input {
+    width: 200px; 
+    display: block;
+    padding: 10px;
+    margin: 10px auto;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}

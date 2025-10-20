@@ -10,7 +10,7 @@ export class Pedido extends Model<InferAttributes<Pedido>, InferCreationAttribut
     declare data: CreationOptional<Date>;
     declare status: CreationOptional<"em_preparo" | "concluido" | "pago">;
     declare total: number;
-    declare formaPagamento: "dinheiro" | "pix" | "cartao" | null;
+    declare formaPagamento: "dinheiro" | "pix" | "cartao" | "nota" | null;
     declare caixaId: CreationOptional<number>;
     declare Cliente?: Cliente;
     declare itens?: ItemPedido[];
@@ -44,7 +44,7 @@ Pedido.init(
             allowNull: false
         },
         formaPagamento: {
-            type: DataTypes.ENUM("dinheiro", "pix", "cartao"),
+            type: DataTypes.ENUM("dinheiro", "pix", "cartao", "nota"),
             allowNull: true
         },
 

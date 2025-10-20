@@ -77,8 +77,7 @@ async function carregarPedidos() {
                     <td>R$ ${p.total.toFixed(2)}</td>
                     <td>${p.status}</td>
                     <td>${new Date(p.data).toLocaleString()}</td>
-                            <td>${p.formaPagamento ? p.formaPagamento.toUpperCase() : "-"}</td>
-
+                    <td>${p.formaPagamento && p.formaPagamento.trim() !== "" ? p.formaPagamento.trim().toUpperCase() : "-"}</td>
                     <td>
                         <button onclick="mudarStatus(${p.id}, '${p.status}')">Alterar Status</button>
                     </td>
@@ -99,7 +98,7 @@ async function carregarPedidos() {
                 <td>${pedido.itens?.map(i => i.descricao).join(", ") || "-"}</td>
                 <td>R$ ${pedido.total.toFixed(2)}</td>
                 <td>${pedido.status}</td>
-                <td>${pedido.formaPagamento ? pedido.formaPagamento.toUpperCase() : "-"}</td>
+                <td>${p.formaPagamento && p.formaPagamento.trim() !== "" ? p.formaPagamento.trim().toUpperCase() : "-"}</td>
                 <td>${new Date(pedido.data).toLocaleString()}</td>
                 <td>
                   <button onclick="mudarStatus(${pedido.id}, '${pedido.status}')">Alterar Status</button>
@@ -167,6 +166,7 @@ function escolherFormaPagamento() {
                 <button class="btn-pagamento" data-tipo="dinheiro">💵 Dinheiro</button>
                 <button class="btn-pagamento" data-tipo="pix">⚡ Pix</button>
                 <button class="btn-pagamento" data-tipo="cartao">💳 Cartão</button>
+                <button class="btn-pagamento" data-tipo="nota">🧾 Nota</button>
             </div>
         `;
         document.body.appendChild(modal);
@@ -181,7 +181,30 @@ function escolherFormaPagamento() {
     });
 }
 
+document.getElementById('irCaixaBtn').addEventListener('click', () => {
+    window.location.href = 'caixa.html';
+});
 
+const modal = document.getElementById('modalProduto');
+document.getElementById('abrirModalProdutoBtn').onclick = () => modal.style.display = 'flex';
+document.getElementById('fecharModalProdutoBtn').onclick = () => modal.style.display = 'none';
+
+document.getElementById('salvarProdutoBtn').onclick = async () => {
+    const nome = document.getElementById('nomeProduto').value;
+    const preco = document.getElementById('precoProduto').value;
+
+    if (!nome || !preco) return alert('Preencha todos os campos');
+
+    const resp = await fetch('http://localhost:3000/api/produto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, preco })
+    });
+
+    const data = await resp.json();
+    alert(data.msg);
+    if (resp.ok) modal.style.display = 'none';
+};
 
 
 
