@@ -61,4 +61,4 @@ Pedido.belongsTo(Cliente, { foreignKey: "clienteId" });
 Cliente.hasMany(Pedido, { foreignKey: "clienteId" });
 
 Pedido.hasMany(ItemPedido, { foreignKey: "pedidoId", as: "itens" });
-ItemPedido.belongsTo(Pedido, { foreignKey: "pedidoId", as: "itens" });
+ItemPedido.belongsTo(Pedido, { foreignKey: "pedidoId" });

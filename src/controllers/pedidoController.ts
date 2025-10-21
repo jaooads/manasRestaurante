@@ -2,9 +2,16 @@ import { Request, Response } from "express";
 import { Pedido } from "../models/pedido";
 import { ItemPedido } from "../models/itemPedido";
 import { Cliente } from "../models/cliente";
+import { Caixa } from "../models/caixa";
+import { Produto } from "../models/produto";
 
 export const criarPedido = async (req: Request, res: Response) => {
     try {
+
+        const caixaAberto = await Caixa.findOne({ where: { status: "aberto" } });
+        if (!caixaAberto) {
+            return res.status(400).json({ msg: "Não é possível criar pedido. Abra o caixa primeiro." });
+        }
         const { clienteNome, itens } = req.body;
 
         if (!clienteNome || !itens || itens.length === 0) {
@@ -121,3 +128,83 @@ export const atualizarFormaPagamento = async (req: Request, res: Response) => {
         return res.status(500).json({ msg: "Erro ao atualizar forma de pagamento" });
     }
 };
+
+export const adicionarItem = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { produtoId, quantidade } = req.body;
+
+        const pedido = await Pedido.findByPk(id);
+        if (!pedido) return res.status(404).json({ msg: "Pedido não encontrado" });
+
+        const produto = await Produto.findByPk(produtoId);
+        if (!produto) return res.status(404).json({ msg: "Produto não encontrado" });
+
+        await ItemPedido.create({
+            pedidoId: pedido.id,
+            produtoId: produto.id,
+            descricao: produto.nome,
+            quantidade,
+            precoUnitario: produto.preco
+        });
+
+        const itens = await ItemPedido.findAll({ where: { pedidoId: pedido.id } });
+        const totalAtualizado = itens.reduce(
+            (acc, item) => acc + item.precoUnitario * item.quantidade,
+            0
+        );
+
+        await pedido.update({ total: totalAtualizado });
+
+        return res.json({ msg: "Item adicionado ao pedido", totalAtualizado });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Erro ao adicionar item" });
+    }
+};
+
+export const removerItem = async (req: Request, res: Response) => {
+    try {
+        const { pedidoId, itemId } = req.params;
+        const item = await ItemPedido.findOne({ where: { id: itemId, pedidoId } });
+        if (!item) return res.status(404).json({ msg: "Item não encontrado" });
+
+        await item.destroy();
+
+        const itensRestantes = await ItemPedido.findAll({ where: { pedidoId } });
+        const totalAtualizado = itensRestantes.reduce(
+            (acc, i) => acc + i.precoUnitario * i.quantidade,
+            0
+        );
+
+        await Pedido.update({ total: totalAtualizado }, { where: { id: pedidoId } });
+
+        return res.json({ msg: "Item removido com sucesso", totalAtualizado });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Erro ao remover item" });
+    }
+};
+
+export const buscarPedidoPorId = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const pedido = await Pedido.findByPk(id, {
+            include: [
+                { model: ItemPedido, as: "itens" },
+                { model: Cliente, attributes: ["nome"] }
+            ]
+        });
+
+        if (!pedido) return res.status(404).json({ msg: "Pedido não encontrado" });
+
+        return res.json(pedido);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Erro ao buscar pedido" });
+    }
+
+};
+
+
+

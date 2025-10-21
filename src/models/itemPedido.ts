@@ -8,6 +8,7 @@ export class ItemPedido extends Model<InferAttributes<ItemPedido>, InferCreation
     declare descricao: string;
     declare quantidade: number;
     declare precoUnitario: number;
+    declare produtoId: number;
 }
 
 ItemPedido.init(
@@ -30,6 +31,10 @@ ItemPedido.init(
         },
         precoUnitario: {
             type: DataTypes.FLOAT,
+            allowNull: false
+        },
+        produtoId: {
+            type: DataTypes.INTEGER,
             allowNull: false
         },
     },
