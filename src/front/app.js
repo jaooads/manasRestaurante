@@ -12,7 +12,7 @@ async function carregarProdutos() {
         const res = await fetch("http://localhost:3000/api/produtos");
         produtos = await res.json();
         produtoSelect.innerHTML = produtos
-            .map(p => `<option value="${p.id}">${p.nome} - R$${p.preco}</option>`)
+            .map(p => `<option value="${p.nome}">${p.nome} - R$${p.preco}</option>`)
             .join("");
     } catch (err) {
         console.error("Erro ao carregar produtos:", err);
@@ -21,20 +21,20 @@ async function carregarProdutos() {
 
 // Adicionar produto ao pedido
 document.getElementById("adicionarProdutoBtn").addEventListener("click", () => {
-    const produtoId = Number(produtoSelect.value);
+    const produtoNome = produtoSelect.value;
     const quantidade = Number(document.getElementById("quantidade").value);
-    const produtoObj = produtos.find(p => p.id === produtoId);
+    const produtoObj = produtos.find(p => p.nome === produtoNome);
     if (!produtoObj || quantidade <= 0) return alert("Produto ou quantidade inválida");
 
     pedidoItens.push({
-        produtoId: produtoObj.id,
         descricao: produtoObj.nome,
         quantidade,
-        precoUnitario: produtoObj.preco
+        precoUnitario: produtoObj.preco,
+        produtoId: produtoObj.id
     });
 
     pedidoItensList.innerHTML = pedidoItens
-        .map(i => `${i.descricao} x${i.quantidade} - R$${(i.precoUnitario * i.quantidade).toFixed(2)}`)
+        .map(i => `${i.descricao} x${i.quantidade} - R$${i.precoUnitario * i.quantidade}`)
         .join("<br>");
 });
 
@@ -54,7 +54,10 @@ pedidoForm.addEventListener("submit", async e => {
         });
 
         const data = await res.json();
-        if (!res.ok) return alert(data.msg);
+
+        if (!res.ok) {
+            return alert(data.msg);
+        }
 
         pedidoItens = [];
         pedidoItensList.innerHTML = "";
@@ -64,6 +67,99 @@ pedidoForm.addEventListener("submit", async e => {
         console.error("Erro ao criar pedido:", err);
     }
 });
+
+// Tornar abrirModalEditar global
+window.abrirModalEditar = async function (pedidoId) {
+    const modal = document.getElementById("modalEditar");
+    const itensDiv = document.getElementById("itensEditar");
+    const produtoSelect = document.getElementById("produtoEditarSelect");
+
+    const res = await fetch(`http://localhost:3000/api/pedidos/${pedidoId}`);
+    const pedido = await res.json();
+
+    itensDiv.innerHTML = "";
+    produtoSelect.innerHTML = "";
+    let itensParaRemover = [];
+
+    pedido.itens.forEach(i => {
+        const li = document.createElement("div");
+        li.style.display = "flex";
+        li.style.justifyContent = "space-between";
+        li.style.alignItems = "center";
+        li.style.marginBottom = "5px";
+
+        const span = document.createElement("span");
+        span.textContent = `${i.descricao} x${i.quantidade}`;
+
+        const btnRemover = document.createElement("button");
+        btnRemover.textContent = "🗑️";
+        btnRemover.style.background = "transparent";
+        btnRemover.style.border = "none";
+        btnRemover.style.cursor = "pointer";
+        btnRemover.style.fontSize = "16px";
+
+        btnRemover.onclick = () => {
+            if (!itensParaRemover.includes(i.id)) {
+                itensParaRemover.push(i.id);
+                li.style.opacity = "0.5";
+            } else {
+                itensParaRemover = itensParaRemover.filter(id => id !== i.id);
+                li.style.opacity = "1";
+            }
+        };
+
+        li.appendChild(span);
+        li.appendChild(btnRemover);
+        itensDiv.appendChild(li);
+    });
+
+    const resProdutos = await fetch("http://localhost:3000/api/produtos");
+    const produtos = await resProdutos.json();
+    produtoSelect.innerHTML = produtos
+        .map(p => `<option value="${p.id}">${p.nome} - R$${p.preco}</option>`)
+        .join("");
+
+    modal.style.display = "flex";
+
+    const btnAdicionar = document.getElementById("adicionarItemEditarBtn");
+    const btnFechar = document.getElementById("fecharModalEditarBtn");
+
+    let btnSalvarAlteracoes = document.getElementById("salvarAlteracoesBtn");
+    if (!btnSalvarAlteracoes) {
+        btnSalvarAlteracoes = document.createElement("button");
+        btnSalvarAlteracoes.id = "salvarAlteracoesBtn";
+        btnSalvarAlteracoes.textContent = "Salvar Alterações";
+        btnSalvarAlteracoes.className = "btn-pagamento";
+        document.querySelector(".modal-botoes").appendChild(btnSalvarAlteracoes);
+    }
+
+    btnAdicionar.onclick = async () => {
+        const produtoId = produtoSelect.value;
+        const quantidade = Number(document.getElementById("quantidadeEditar").value);
+        if (!produtoId || quantidade <= 0) return alert("Produto ou quantidade inválida");
+
+        await fetch(`http://localhost:3000/api/pedidos/${pedidoId}/adicionarItens`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ produtoId, quantidade })
+        });
+
+        abrirModalEditar(pedidoId);
+        carregarPedidos();
+    };
+
+    btnFechar.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    btnSalvarAlteracoes.onclick = async () => {
+        for (const itemId of itensParaRemover) {
+            await fetch(`http://localhost:3000/api/pedidos/${pedidoId}/removerItem/${itemId}`, { method: "DELETE" });
+        }
+        abrirModalEditar(pedidoId);
+        carregarPedidos();
+    };
+};
 
 // Carregar pedidos
 async function carregarPedidos() {
@@ -81,36 +177,24 @@ async function carregarPedidos() {
             return `
                 <tr>
                     <td>${p.id}</td>
-                    <td>${p.Cliente?.nome || "-"}</td>
+                    <td>${p.Cliente.nome}</td>
                     <td>${itens.map(i => i.descricao + " x" + i.quantidade).join(", ")}</td>
                     <td>R$ ${p.total.toFixed(2)}</td>
                     <td>${p.status}</td>
                     <td>${new Date(p.data).toLocaleString()}</td>
-                    <td>${p.formaPagamento?.trim() ? p.formaPagamento.toUpperCase() : "-"}</td>
+                    <td>${p.formaPagamento && p.formaPagamento.trim() !== "" ? p.formaPagamento.trim().toUpperCase() : "-"}</td>
                     <td>
                         <button onclick="mudarStatus(${p.id}, '${p.status}')">Alterar Status</button>
                     </td>
                     <td>
-                        <button class="editar-btn" data-id="${p.id}">Editar</button>
+                        <button class="editar-btn" data-id="${p.id}" onclick="abrirModalEditar(${p.id})">Editar</button>
                     </td>
                 </tr>
             `;
         }).join("");
-
-        atualizarBotoesEditar();
     } catch (err) {
         console.error("Erro ao carregar pedidos:", err);
     }
-}
-
-// Atualiza botões de editar
-function atualizarBotoesEditar() {
-    document.querySelectorAll(".editar-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            const pedidoId = btn.getAttribute("data-id");
-            abrirModalEditar(pedidoId);
-        });
-    });
 }
 
 // Inicialização
@@ -119,7 +203,6 @@ window.addEventListener("DOMContentLoaded", () => {
     carregarPedidos();
 });
 
-// Alterar status do pedido
 async function mudarStatus(pedidoId, statusAtual) {
     let novoStatus;
 
@@ -156,7 +239,6 @@ async function mudarStatus(pedidoId, statusAtual) {
     }
 }
 
-// Modal escolher forma de pagamento
 function escolherFormaPagamento() {
     return new Promise((resolve) => {
         const modal = document.createElement("div");
@@ -182,16 +264,10 @@ function escolherFormaPagamento() {
     });
 }
 
-// Navegação
 document.getElementById('irCaixaBtn').addEventListener('click', () => {
     window.location.href = 'caixa.html';
 });
 
-document.getElementById('irRelatorioBtn').addEventListener('click', () => {
-    window.location.href = 'relatorio.html';
-});
-
-// Modal de produto
 const modal = document.getElementById('modalProduto');
 document.getElementById('abrirModalProdutoBtn').onclick = () => modal.style.display = 'flex';
 document.getElementById('fecharModalProdutoBtn').onclick = () => modal.style.display = 'none';
@@ -212,3 +288,4 @@ document.getElementById('salvarProdutoBtn').onclick = async () => {
     alert(data.msg);
     if (resp.ok) modal.style.display = 'none';
 };
+

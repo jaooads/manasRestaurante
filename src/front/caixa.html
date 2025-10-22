@@ -52,6 +52,7 @@
     <section id="acoesCaixa">
         <button id="abrirCaixaBtn">Abrir Caixa</button>
         <button id="fecharCaixaBtn">Fechar Caixa</button>
+        <button id="verVendasBtn">📊 Ver Vendas</button>
     </section>
 
     <button id="historicoCaixasBtn">Histórico de Caixas</button>
@@ -96,6 +97,27 @@
                 </table>
                 <button id="fecharModalPedidos">Fechar</button>
             </div>
+        </div>
+    </div>
+
+    <div id="modalVendas" class="modal" style="display:none;">
+        <div class="modal-conteudo">
+            <h3>Resumo de Vendas</h3>
+            <div id="vendasContainer">
+                <div class="venda-card">
+                    <h4>📅 Dia</h4>
+                    <ul id="vendasDia"></ul>
+                </div>
+                <div class="venda-card">
+                    <h4>🗓️ Semana</h4>
+                    <ul id="vendasSemana"></ul>
+                </div>
+                <div class="venda-card">
+                    <h4>📆 Mês</h4>
+                    <ul id="vendasMes"></ul>
+                </div>
+            </div>
+            <button id="fecharModalVendas">Fechar</button>
         </div>
     </div>
 

@@ -4,14 +4,14 @@ const totaisPagamento = document.getElementById("totaisPagamento");
 const tbodyHistorico = document.querySelector("#historicoCaixa tbody");
 
 let caixaAberto = null;
-let caixa = [];
+let caixas = [];
 
 // Carregar status do caixa
 async function carregarCaixa() {
     try {
         const res = await fetch("http://localhost:3000/api/caixas");
-        const caixas = await res.json();
-        caixaAberto = caixas.find(c => !c.dataFechamento);
+        const data = await res.json();
+        caixaAberto = data.find(c => !c.dataFechamento);
 
         if (caixaAberto) {
             statusCaixa.textContent = `Aberto em ${new Date(caixaAberto.dataAbertura).toLocaleString()}`;
@@ -27,7 +27,7 @@ async function carregarCaixa() {
     }
 }
 
-// Carregar movimentações do caixa
+// Carregar movimentações
 async function carregarMovimentacoes() {
     try {
         const res = await fetch("http://localhost:3000/api/pedidos");
@@ -42,15 +42,15 @@ async function carregarMovimentacoes() {
         }
 
         tbodyHistorico.innerHTML = pedidosDoCaixa.map(p => `
-      <tr>
-        <td>${p.id}</td>
-        <td>${p.Cliente?.nome || "-"}</td>
-        <td>${p.itens?.map(i => `${i.descricao} x${i.quantidade}`).join(", ") || "-"}</td>
-        <td>R$ ${p.total.toFixed(2)}</td>
-        <td>${p.formaPagamento?.toUpperCase() || "-"}</td>
-        <td>${new Date(p.data).toLocaleString()}</td>
-      </tr>
-    `).join("");
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.Cliente?.nome || "-"}</td>
+                <td>${p.itens?.map(i => `${i.descricao} x${i.quantidade}`).join(", ") || "-"}</td>
+                <td>R$ ${p.total.toFixed(2)}</td>
+                <td>${p.formaPagamento?.toUpperCase() || "-"}</td>
+                <td>${new Date(p.data).toLocaleString()}</td>
+            </tr>
+        `).join("");
 
         atualizarTotais(pedidosDoCaixa);
     } catch (err) {
@@ -60,10 +60,7 @@ async function carregarMovimentacoes() {
 
 // Atualizar totais
 function atualizarTotais(pedidos) {
-    let total = 0;
-    let totalDinheiro = 0;
-    let totalPix = 0;
-    let totalCartao = 0;
+    let total = 0, totalDinheiro = 0, totalPix = 0, totalCartao = 0;
 
     pedidos.forEach(p => {
         if (p.status === "pago") {
@@ -76,10 +73,10 @@ function atualizarTotais(pedidos) {
 
     totalVendido.textContent = `R$ ${total.toFixed(2)}`;
     totaisPagamento.innerHTML = `
-    <li>Dinheiro: R$ ${totalDinheiro.toFixed(2)}</li>
-    <li>PIX: R$ ${totalPix.toFixed(2)}</li>
-    <li>Cartão: R$ ${totalCartao.toFixed(2)}</li>
-  `;
+        <li>Dinheiro: R$ ${totalDinheiro.toFixed(2)}</li>
+        <li>PIX: R$ ${totalPix.toFixed(2)}</li>
+        <li>Cartão: R$ ${totalCartao.toFixed(2)}</li>
+    `;
 }
 
 // Abrir caixa
@@ -106,15 +103,11 @@ document.getElementById("fecharCaixaBtn").addEventListener("click", async () => 
     }
 });
 
-// Inicialização
-window.addEventListener("DOMContentLoaded", carregarCaixa);
-
-
+// Histórico de caixas
 const historicoCaixasBtn = document.getElementById("historicoCaixasBtn");
 const modalHistorico = document.getElementById("modalHistoricoCaixas");
 const fecharModalHistorico = document.getElementById("fecharModalHistorico");
 const tbodyHistoricoCaixas = document.querySelector("#tabelaHistoricoCaixas tbody");
-
 
 historicoCaixasBtn.addEventListener("click", async () => {
     try {
@@ -130,33 +123,30 @@ historicoCaixasBtn.addEventListener("click", async () => {
                 <td>R$ ${c.totaisPorPagamento.dinheiro.toFixed(2)}</td>
                 <td>R$ ${c.totaisPorPagamento.pix.toFixed(2)}</td>
                 <td>R$ ${c.totaisPorPagamento.cartao.toFixed(2)}</td>
-                 <td><button onclick="verPedidosDoCaixa(${c.caixaId})">Visualizar</button></td>
+                <td><button onclick="verPedidosDoCaixa(${c.caixaId})">Visualizar</button></td>
             </tr>
         `).join("");
 
-
-        modalHistoricoCaixas.style.display = "flex";
+        modalHistorico.style.display = "flex";
     } catch (err) {
         console.error("Erro ao carregar histórico de caixas:", err);
     }
 });
 
-document.getElementById("fecharModalHistorico").addEventListener("click", () => {
-    document.getElementById("modalHistoricoCaixas").style.display = "none";
+fecharModalHistorico.addEventListener("click", () => {
+    modalHistorico.style.display = "none";
 });
 
 function verPedidosDoCaixa(caixaId) {
-
     const caixa = caixas.find(c => c.caixaId === caixaId);
     if (!caixa) return;
 
-    console.log(caixa);
     const tbody = document.querySelector("#pedidosDoCaixa tbody");
     tbody.innerHTML = caixa.pedido.map(p => `
         <tr>
             <td>${p.id}</td>
             <td>${p.cliente}</td>
-        <td>${p.itens?.map(i => `${i.descricao} x${i.quantidade}`).join(", ") || "-"}</td>
+            <td>${p.itens?.map(i => `${i.descricao} x${i.quantidade}`).join(", ") || "-"}</td>
             <td>R$ ${p.total.toFixed(2)}</td>
             <td>${p.formaPagamento}</td>
             <td>${new Date(p.data).toLocaleString()}</td>
@@ -166,13 +156,48 @@ function verPedidosDoCaixa(caixaId) {
     document.getElementById("modalPedidosCaixa").style.display = "flex";
 }
 
-// Fechar modal
+// Fechar modal pedidos
 document.getElementById("fecharModalPedidos").addEventListener("click", () => {
     document.getElementById("modalPedidosCaixa").style.display = "none";
 });
 
+document.getElementById("voltarPedidos").addEventListener("click", () => {
+    window.location.href = "index.html";
+});
+
+// Modal de vendas
+const modalVendas = document.getElementById("modalVendas");
+const verVendasBtn = document.getElementById("verVendasBtn");
+const fecharModalVendas = document.getElementById("fecharModalVendas");
+
+verVendasBtn.addEventListener("click", async () => {
+    modalVendas.style.display = "flex";
+    try {
+        const res = await fetch("http://localhost:3000/api/caixaVendas");
+        const data = await res.json();
+
+        const renderResumo = (containerId, vendas) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ""; // limpar conteúdo
+            for (const [produto, info] of Object.entries(vendas)) {
+                const li = document.createElement("li");
+                li.textContent = `${produto} — ${info.quantidade} un — R$ ${info.valor.toFixed(2)}`;
+                container.appendChild(li);
+            }
+        };
+
+        renderResumo("vendasDia", data.dia);
+        renderResumo("vendasSemana", data.semana);
+        renderResumo("vendasMes", data.mes);
+
+    } catch (err) {
+        console.error("Erro ao carregar vendas:", err);
+    }
+});
 
 
+fecharModalVendas.addEventListener("click", () => {
+    modalVendas.style.display = "none";
+});
 
-
-
+window.addEventListener("DOMContentLoaded", carregarCaixa);

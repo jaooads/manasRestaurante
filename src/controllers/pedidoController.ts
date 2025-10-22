@@ -7,13 +7,12 @@ import { Produto } from "../models/produto";
 
 export const criarPedido = async (req: Request, res: Response) => {
     try {
-
         const caixaAberto = await Caixa.findOne({ where: { status: "aberto" } });
         if (!caixaAberto) {
             return res.status(400).json({ msg: "Não é possível criar pedido. Abra o caixa primeiro." });
         }
-        const { clienteNome, itens } = req.body;
 
+        const { clienteNome, itens } = req.body;
         if (!clienteNome || !itens || itens.length === 0) {
             return res.status(400).json({ msg: "Cliente e itens são obrigatórios" });
         }
@@ -29,15 +28,23 @@ export const criarPedido = async (req: Request, res: Response) => {
         const pedido = await Pedido.create({ clienteId: cliente.id, total, status: "em_preparo" });
 
         // Criar itens
-        const itensCriados = await Promise.all(itens.map(item =>
-            ItemPedido.create({
-                pedidoId: pedido.id,
-                descricao: item.descricao,
-                quantidade: item.quantidade,
-                precoUnitario: item.precoUnitario,
-                produtoId: item.produtoId,
+        const itensCriados = await Promise.all(
+            itens.map(async item => {
+                let produtoId = item.produtoId;
+                if (!produtoId) {
+                    const produto = await Produto.findOne({ where: { nome: item.descricao } });
+                    if (!produto) throw new Error(`Produto não encontrado: ${item.descricao}`);
+                    produtoId = produto.id;
+                }
+                return ItemPedido.create({
+                    pedidoId: pedido.id,
+                    descricao: item.descricao,
+                    quantidade: item.quantidade,
+                    precoUnitario: item.precoUnitario,
+                    produtoId,
+                });
             })
-        ));
+        );
 
         const pedidoCompleto = await Pedido.findOne({
             where: { id: pedido.id },
@@ -49,7 +56,6 @@ export const criarPedido = async (req: Request, res: Response) => {
 
         return res.status(201).json({ msg: "Pedido criado com sucesso", pedido: pedidoCompleto });
     } catch (error) {
-
         console.error(error);
         return res.status(500).json({ msg: "Erro ao criar pedido", error });
     }
