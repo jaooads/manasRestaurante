@@ -21,7 +21,7 @@ router.delete("/pedidos/:pedidoId/removerItem/:itemId", PedidoController.remover
 router.post("/caixa/abrir", CaixaController.abrirCaixa);
 router.post("/caixa/fechar", CaixaController.fecharCaixa);
 router.get("/caixas", CaixaController.listarCaixas);
-
+router.get("/caixaVendas", CaixaController.caixaVendas);
 
 // --------- PRODUTO ---------
 router.post("/produto", ProdutoController.criarProduto);
