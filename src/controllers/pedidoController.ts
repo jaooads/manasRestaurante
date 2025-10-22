@@ -35,6 +35,7 @@ export const criarPedido = async (req: Request, res: Response) => {
                 descricao: item.descricao,
                 quantidade: item.quantidade,
                 precoUnitario: item.precoUnitario,
+                produtoId: item.produtoId,
             })
         ));
 
