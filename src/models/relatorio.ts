@@ -1,8 +1,8 @@
 import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
-import { sequelize } from "../database/index";
+import { sequelize } from "../database/database.js";
 
 export class Relatorio extends Model<InferAttributes<Relatorio>, InferCreationAttributes<Relatorio>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare tipo: "vendas_diarias" | "vendas_semanais" | "vendas_mensais" | "produtos_mais_vendidos" | "total_por_forma_pagamento" | "clientes_mais_frequentes";
     declare periodo: string;
     declare dados: CreationOptional<string>;

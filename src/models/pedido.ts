@@ -1,11 +1,11 @@
 import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
-import { sequelize } from "../database/index";
-import { ItemPedido } from "./itemPedido";
-import { Cliente } from "./cliente";
+import { sequelize } from "../database/database.js";
+import { ItemPedido } from "./itemPedido.js";
+import { Cliente } from "./cliente.js";
 
 
 export class Pedido extends Model<InferAttributes<Pedido>, InferCreationAttributes<Pedido>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare clienteId: number;
     declare data: CreationOptional<Date>;
     declare status: CreationOptional<"em_preparo" | "concluido" | "pago">;

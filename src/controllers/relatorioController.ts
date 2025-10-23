@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Pedido } from "../models/pedido";
-import { Relatorio } from "../models/relatorio";
+import { Pedido } from "../models/pedido.js";
+import { Relatorio } from "../models/relatorio.js";
 
 export const gerarRelatorio = async (req: Request, res: Response) => {
     try {

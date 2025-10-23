@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { Caixa } from "../models/caixa";
-import { Pedido } from "../models/pedido";
-import { ItemPedido } from "../models/itemPedido";
+import { Caixa } from "../models/caixa.js";
+import { Pedido } from "../models/pedido.js";
+import { ItemPedido } from "../models/itemPedido.js";
+import { Op } from "sequelize";
+
 
 export const abrirCaixa = async (_req: Request, res: Response) => {
     try {
@@ -22,7 +24,12 @@ export const fecharCaixa = async (_req: Request, res: Response) => {
         if (!caixa) return res.status(400).json({ msg: "Não há caixa aberto" });
 
         // Buscar pedidos pagos que ainda não foram associados a nenhum caixa
-        const pedidos = await Pedido.findAll({ where: { status: "pago", caixaId: null } });
+        const pedidos = await Pedido.findAll({
+            where: {
+                status: "pago",
+                caixaId: { [Op.is]: null } as any
+            }
+        });
 
 
         // Atualizar caixaId nos pedidos
@@ -84,7 +91,7 @@ export const caixaVendas = async (_req: Request, res: Response) => {
 
         vendas.forEach(pedido => {
             const dataPedido = new Date(pedido.data);
-            pedido.itens.forEach(item => {
+            pedido.itens?.forEach(item => {
                 const { descricao, quantidade, precoUnitario } = item;
                 const valorTotal = quantidade * precoUnitario;
 

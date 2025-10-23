@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { Caixa } from "../models/caixa";
-import { Pedido } from "../models/pedido";
-import { Cliente } from "../models/cliente";
-import { ItemPedido } from "../models/itemPedido";
+import { Caixa } from "../models/caixa.js";
+import { Pedido } from "../models/pedido.js";
+import { Cliente } from "../models/cliente.js";
+import { ItemPedido } from "../models/itemPedido.js";
 
 
 export const historicoCaixa = async (_req: Request, res: Response) => {

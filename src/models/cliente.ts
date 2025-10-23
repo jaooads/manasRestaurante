@@ -1,8 +1,8 @@
 import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
-import { sequelize } from "../database/index";
+import { sequelize } from "../database/database.js";
 
 export class Cliente extends Model<InferAttributes<Cliente>, InferCreationAttributes<Cliente>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare nome: string;
 }
 

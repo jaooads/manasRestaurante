@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { Pedido } from "../models/pedido";
-import { ItemPedido } from "../models/itemPedido";
-import { Cliente } from "../models/cliente";
-import { Caixa } from "../models/caixa";
-import { Produto } from "../models/produto";
+import { Pedido } from "../models/pedido.js";
+import { ItemPedido } from "../models/itemPedido.js";
+import { Cliente } from "../models/cliente.js";
+import { Caixa } from "../models/caixa.js";
+import { Produto } from "../models/produto.js";
 
 export const criarPedido = async (req: Request, res: Response) => {
     try {
@@ -29,7 +29,7 @@ export const criarPedido = async (req: Request, res: Response) => {
 
         // Criar itens
         const itensCriados = await Promise.all(
-            itens.map(async item => {
+            itens.map(async (item: any) => {
                 let produtoId = item.produtoId;
                 if (!produtoId) {
                     const produto = await Produto.findOne({ where: { nome: item.descricao } });

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import * as PedidoController from "./controllers/pedidoController";
-import * as CaixaController from "./controllers/caixaController";
-import * as ProdutoController from "./controllers/produtoController";
-import * as historicoCaixaController from "./controllers/historioCaixaController";
-import * as relatorioController from "./controllers/relatorioController";
+import * as PedidoController from "./controllers/pedidoController.js";
+import * as CaixaController from "./controllers/caixaController.js";
+import * as ProdutoController from "./controllers/produtoController.js";
+import * as historicoCaixaController from "./controllers/historioCaixaController.js";
+import * as relatorioController from "./controllers/relatorioController.js";
 const router = Router();
 
 // --------- PEDIDOS ---------

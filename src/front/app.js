@@ -1,3 +1,4 @@
+
 const produtoSelect = document.getElementById("produtoSelect");
 const pedidoForm = document.getElementById("pedidoForm");
 const pedidosTableBody = document.querySelector("#pedidosTable tbody");
@@ -278,14 +279,43 @@ document.getElementById('salvarProdutoBtn').onclick = async () => {
 
     if (!nome || !preco) return alert('Preencha todos os campos');
 
-    const resp = await fetch('http://localhost:3000/api/produto', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, preco })
-    });
+    try {
+        const resp = await fetch('http://localhost:3000/api/produto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, preco })
+        });
 
-    const data = await resp.json();
-    alert(data.msg);
-    if (resp.ok) modal.style.display = 'none';
+        const data = await resp.json();
+
+        // Substitui o alert por um modal de notificação temporário
+        const notif = document.createElement('div');
+        notif.textContent = data.msg;
+        notif.style.position = 'fixed';
+        notif.style.top = '20px';
+        notif.style.right = '20px';
+        notif.style.padding = '10px 20px';
+        notif.style.backgroundColor = '#4CAF50';
+        notif.style.color = '#fff';
+        notif.style.borderRadius = '8px';
+        notif.style.zIndex = '9999';
+        document.body.appendChild(notif);
+
+        setTimeout(() => notif.remove(), 2500);
+
+        if (resp.ok) {
+            modal.style.display = 'none';
+            document.getElementById('nomeProduto').value = '';
+            document.getElementById('precoProduto').value = '';
+
+            const option = document.createElement('option');
+            option.value = nome;
+            option.textContent = `${nome} - R$${preco}`;
+            produtoSelect.appendChild(option);
+        }
+    } catch (err) {
+        console.error("Erro ao salvar produto:", err);
+    }
 };
+
 

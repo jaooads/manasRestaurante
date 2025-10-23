@@ -1,8 +1,8 @@
 import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
-import { sequelize } from "../database/index";
+import { sequelize } from "../database/database.js";
 
 export class Caixa extends Model<InferAttributes<Caixa>, InferCreationAttributes<Caixa>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare status: "aberto" | "fechado";
     declare dataAbertura: CreationOptional<Date>;
     declare dataFechamento: CreationOptional<Date>;

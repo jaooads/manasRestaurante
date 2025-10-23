@@ -1,33 +1,55 @@
 {
+  "name": "manasrestaurante",
+  "version": "1.0.0",
+  "description": "Sistema completo para gerenciamento de restaurante.",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && npx electron ./dist/main.js",
+    "build": "tsc && electron-builder",
+     "dev": "node src/server.ts"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mysql2": "^3.15.2",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
   },
-  "name": "manasrestaurante",
-  "version": "1.0.0",
-  "description": "Sistema completo para gerenciamento de restaurante, desenvolvido em **Node.js + TypeScript + Sequelize (MySQL)**.",
-  "main": "index.js",
-  "scripts": {
-    "dev": "ts-node-dev src/server.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jaooads/manasRestaurante.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jaooads/manasRestaurante/issues"
-  },
-  "homepage": "https://github.com/jaooads/manasRestaurante#readme",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.7.2",
-    "ts-node-dev": "^2.0.0",
+    "@types/node": "^24.9.1",
+    "electron": "^38.4.0",
+    "electron-builder": "^26.0.12",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.manasrestaurante.app",
+    "productName": "ManasRestaurante",
+    "directories": {
+      "output": "dist_build"
+    },
+    "files": [
+      "dist/**/*",
+      "src/front/**/*",
+      "package.json",
+      "assets/icon.ico"
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": "nsis",
+      "artifactName": "ManasRestaurante Setup ${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ManasRestaurante"
+    }
   }
 }

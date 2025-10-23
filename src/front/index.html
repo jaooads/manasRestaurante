@@ -82,6 +82,21 @@
         });
     </script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("🔹 Página carregada dentro do Electron");
+
+            document.querySelectorAll("input").forEach(input => {
+                input.addEventListener("focus", () => {
+                    console.log("🟢 Foco no input:", input.id || input.name || input.placeholder);
+                });
+
+                input.addEventListener("keydown", (e) => {
+                    console.log(`⌨️ Tecla pressionada: ${e.key} em ${input.id || input.name || input.placeholder}`);
+                });
+            });
+        });
+    </script>
 
 
     <script src="app.js"></script>
